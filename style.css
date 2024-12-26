@@ -9,3 +9,14 @@
 .display-block {
   display: block;
 }
+
+.drop-div {
+  display: flex;
+  flex-direction: column;
+  max-width: 130px;
+  min-width: 130px;
+}
+
+.display-none {
+  display: none;
+}

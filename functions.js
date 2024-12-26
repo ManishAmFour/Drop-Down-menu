@@ -1,42 +1,69 @@
-function EnterTheDetails(DropDownName, MenuNumber, EnterButton) {
+let DropList = [];
+
+function EnterTheDetails(DropDownName, EnterButton) {
   document.querySelector(`.enter-button`).addEventListener(`click`, () => {
-    if (MenuNumber.value < 6) {
-      let NumberList = MenuNumber.value;
-      let NewDropList = document.createElement(`div`);
-      NewDropList.innerText = `${DropDownName.value}`;
-      document.body.appendChild(NewDropList);
-      CreatingList(NumberList);
+    let NewDropList = document.createElement(`div`);
+    let InputList = document.createElement("input");
+    let EnterList = document.createElement("button");
+    EnterList.classList.add(`enter-list-button`);
+    InputList.type = "number";
+    EnterList.innerText = "Enter";
 
-      document.querySelector(`.major-list`).removeChild(DropDownName);
-      document.querySelector(`.major-list`).removeChild(MenuNumber);
-      document.querySelector(`.major-list`).removeChild(EnterButton);
-    } else {
-      document.querySelector(`.major-list`).removeChild(DropDownName);
-      document.querySelector(`.major-list`).removeChild(MenuNumber);
-      document.querySelector(`.major-list`).removeChild(EnterButton);
-    }
+    NewDropList.classList.add(`drop-div`);
+    NewDropList.innerText = `${DropDownName.value}`;
+    let PushedObject = DropDownName.value;
+    document.body.appendChild(NewDropList);
+
+    DropList.push({ PushedObject, Array: [] });
+
+    console.log(DropList);
+
+    document.querySelector(`.major-list`).removeChild(DropDownName);
+    document.querySelector(`.major-list`).removeChild(EnterButton);
+
+    document.querySelectorAll(`.drop-div`).forEach((div) => {
+      div.addEventListener(`click`, () => {
+        CreateTheDropDown(div, InputList, EnterList);
+      });
+    });
   });
 }
 
-function CreatingList(NumberList) {
-  for (let index = 0; index < NumberList; index++) {
-    let ListElement = document.createElement(`input`);
-    ListElement.classList.add(`input-names`);
-    document.body.appendChild(ListElement);
+function CreateTheDropDown(div, InputList, EnterList) {
+  if (!div.contains(InputList)) {
+    div.appendChild(InputList);
+    div.appendChild(EnterList);
+    NameTheDropDown(div, EnterList, InputList);
   }
-  let EnterListButton = document.createElement(`button`);
-  EnterListButton.innerText = `Enter`;
-  EnterListButton.classList.add(`enter-list`);
-  document.body.append(EnterListButton);
+}
 
-  document.querySelector(`.enter-list`).addEventListener(`click`, () => {
-    InitializingListNumber();
+function NameTheDropDown(div, EnterList, InputList) {
+  EnterList.addEventListener("click", () => {
+    for (let index = 0; index < InputList.value; index++) {
+      let ListElement = document.createElement(`input`);
+
+      ListElement.classList.add(`input-names`);
+      div.appendChild(ListElement);
+    }
+
+    let ListEnterButton = document.createElement("button");
+    ListEnterButton.classList.add("list-enter-button");
+    ListEnterButton.innerText = "Enter";
+    ListEnterButton.dataset.elementName = `${div.innerText}`;
+    div.appendChild(ListEnterButton);
+
+    div.removeChild(EnterList);
+    InputList.classList.add("display-none");
+
+    ListEnterFunction();
   });
 }
 
-function InitializingListNumber() {
-  document.querySelectorAll(`.input-names`).forEach((div) => {
-    console.log(div.value);
+function ListEnterFunction() {
+  document.querySelectorAll(".list-enter-button").forEach((div) => {
+    DropList.forEach((value) => {
+      //if(value.PushedObject === ){}
+    });
   });
 }
 
@@ -46,15 +73,11 @@ document.querySelector(`.create-button`).addEventListener(`click`, () => {
   DropDownName.classList.add(`default-button`);
   DropDownName.classList.add(`drop-list`);
   document.querySelector(`.major-list`).appendChild(DropDownName);
-  let MenuNumber = document.createElement(`input`);
-  MenuNumber.type = "number";
-  MenuNumber.classList.add(`default-button`);
-  MenuNumber.classList.add(`menu-list`);
-  document.querySelector(`.major-list`).appendChild(MenuNumber);
+
   let EnterButton = document.createElement(`button`);
   EnterButton.classList.add(`enter-button`);
   EnterButton.classList.add(`default-button`);
   EnterButton.innerText = `Enter`;
   document.querySelector(`.major-list`).appendChild(EnterButton);
-  EnterTheDetails(DropDownName, MenuNumber, EnterButton);
+  EnterTheDetails(DropDownName, EnterButton);
 });
