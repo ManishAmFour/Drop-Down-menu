@@ -1,4 +1,5 @@
 let DropList = [];
+let TrueValue = true;
 
 function EnterTheDetails(DropDownName, EnterButton) {
   document.querySelector(`.enter-button`).addEventListener(`click`, () => {
@@ -6,17 +7,16 @@ function EnterTheDetails(DropDownName, EnterButton) {
     let InputList = document.createElement("input");
     let EnterList = document.createElement("button");
     EnterList.classList.add(`enter-list-button`);
+    EnterList.dataset.projectName = ``;
     InputList.type = "number";
     EnterList.innerText = "Enter";
 
     NewDropList.classList.add(`drop-div`);
-    NewDropList.innerText = `${DropDownName.value}`;
+    NewDropList.innerHTML = `<div class="project-${DropDownName.value}">${DropDownName.value}</div>`;
     let PushedObject = DropDownName.value;
     document.body.appendChild(NewDropList);
 
-    DropList.push({ PushedObject, Array: [] });
-
-    console.log(DropList);
+    DropList.push({ PushedObject });
 
     document.querySelector(`.major-list`).removeChild(DropDownName);
     document.querySelector(`.major-list`).removeChild(EnterButton);
@@ -31,6 +31,8 @@ function EnterTheDetails(DropDownName, EnterButton) {
 
 function CreateTheDropDown(div, InputList, EnterList) {
   if (!div.contains(InputList)) {
+    EnterList.dataset.projectName = `${div.innerText}`;
+    InputList.dataset.projectName = `${div.innerText}`;
     div.appendChild(InputList);
     div.appendChild(EnterList);
     NameTheDropDown(div, EnterList, InputList);
@@ -39,12 +41,19 @@ function CreateTheDropDown(div, InputList, EnterList) {
 
 function NameTheDropDown(div, EnterList, InputList) {
   EnterList.addEventListener("click", () => {
-    for (let index = 0; index < InputList.value; index++) {
-      let ListElement = document.createElement(`input`);
+    DropList.forEach((element) => {
+      if (EnterList.dataset.projectName === element.PushedObject) {
+        for (let index = 0; index < InputList.value; index++) {
+          let NewInputList = document.createElement("input");
+          NewInputList.classList.add("newly-input");
+          NewInputList.dataset.projectName = `${InputList.dataset.projectName}`;
+          div.appendChild(NewInputList);
+        }
+      }
+    });
 
-      ListElement.classList.add(`input-names`);
-      div.appendChild(ListElement);
-    }
+    div.removeChild(EnterList);
+    InputList.classList.add("display-none");
 
     let ListEnterButton = document.createElement("button");
     ListEnterButton.classList.add("list-enter-button");
@@ -52,17 +61,49 @@ function NameTheDropDown(div, EnterList, InputList) {
     ListEnterButton.dataset.elementName = `${div.innerText}`;
     div.appendChild(ListEnterButton);
 
-    div.removeChild(EnterList);
-    InputList.classList.add("display-none");
-
-    ListEnterFunction();
+    ListEnterFunction(div, EnterList);
   });
 }
 
-function ListEnterFunction() {
-  document.querySelectorAll(".list-enter-button").forEach((div) => {
-    DropList.forEach((value) => {
-      //if(value.PushedObject === ){}
+function ListEnterFunction(div, EnterList) {
+  document.querySelectorAll(".list-enter-button").forEach((smallDiv) => {
+    smallDiv.addEventListener("click", () => {
+      document.querySelectorAll(".newly-input").forEach((element) => {
+        if (element.dataset.projectName === smallDiv.dataset.elementName) {
+          let CreatedDiv = document.createElement("div");
+          CreatedDiv.classList.add("list-display");
+          CreatedDiv.dataset.projectName = `${smallDiv.dataset.elementName}`;
+          CreatedDiv.classList.add("display-none");
+          CreatedDiv.innerText = `${element.value}`;
+          div.appendChild(CreatedDiv);
+          element.classList.add("display-none");
+          TrueValue = false;
+        }
+      });
+      let DropDownicon = document.createElement("img");
+      DropDownicon.classList.add("img-drop");
+      DropDownicon.src = "dropdown.png";
+      DropDownicon.dataset.projectName = `${smallDiv.dataset.elementName}`;
+
+      div.appendChild(DropDownicon);
+
+      PortryingTheList(DropDownicon);
+
+      div.removeChild(smallDiv);
+    });
+  });
+}
+
+function PortryingTheList(DropDownicon) {
+  DropDownicon.addEventListener("click", () => {
+    document.querySelectorAll(".list-display").forEach((input) => {
+      if (input.dataset.projectName === DropDownicon.dataset.projectName) {
+        if (input.classList.contains("display-none")) {
+          input.classList.remove("display-none");
+        } else {
+          input.classList.add("display-none");
+        }
+      }
     });
   });
 }
